@@ -41,6 +41,7 @@ do {
     const feed=await fetchFeed();
     if(feed.header.timestamp) {
       const body={publishedAt:Math.floor(Date.now()/1000),feed};
+      await writeFile(join(directory,'latest.json'),JSON.stringify(body));
       // Immutable time-slot URLs avoid GitHub's several-minute branch-file cache.
       const slot=Math.floor(body.publishedAt/20);
       await writeFile(join(directory,'live',`${slot}.json`),JSON.stringify(body));
@@ -49,7 +50,7 @@ do {
       }
       git('add','--all');
       const tree=git('write-tree');
-      // No parent: reachable history is one commit with at most four snapshots.
+      // No parent: one commit, four slots and one latest-snapshot alias.
       const commit=git('commit-tree',tree,'-m','Current official Cairns live snapshots');
       git('push',`--force-with-lease=${ref}:${previous}`,'origin',`${commit}:${ref}`);
       previous=commit;
