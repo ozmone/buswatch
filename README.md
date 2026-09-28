@@ -4,7 +4,7 @@
 
 https://ozmone.github.io/buswatch/
 
-The Pages version is installable. GitHub Actions fetches the official live Cairns feed every 20 seconds and publishes it on the `live-data` branch. The browser matches that feed to the official timetable. Original feed and trip timestamps must be under two minutes old to show LIVE; failures and delayed jobs are shown explicitly. Stop bookmarks and search work locally on the phone.
+The Pages version is installable. GitHub Actions fetches the official live Cairns feed every 20 seconds and publishes it on the dedicated `live-feed` branch. This generated-data branch has one reachable commit and at most four recent snapshots, avoiding accumulating files or branch history. The publisher verifies an ownership marker and uses a lease so it cannot overwrite a concurrent change. The source branch is never overwritten. The browser matches the feed to the official timetable. Original feed and trip timestamps must be under two minutes old to show LIVE; failures and delayed jobs are shown explicitly. Stop bookmarks and search work locally on the phone.
 
 The `Cairns live data` workflow runs for five hours per job, with another scheduled every four hours and only one running at a time. GitHub scheduling and CDN delivery can be delayed: this is best-effort live data, not a guaranteed transport service. Restart it from Actions → Cairns live data → Run workflow if needed. Disable that workflow to stop the publisher. No Cloudflare account or deployment is used by the Pages version.
 

@@ -8,7 +8,7 @@ on:
     paths: ['.github/workflows/live-data.yml', 'app/scripts/publish-live.mjs']
 concurrency:
   group: cairns-live-publisher
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 permissions:
   contents: write
 jobs:
