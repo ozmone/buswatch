@@ -14,4 +14,4 @@ await writeFile('../docs/manifest.json',JSON.stringify(manifest,null,2));
 await build({entryPoints:['src/pages-api.mjs'],outfile:'../docs/data-api.js',bundle:true,format:'esm',platform:'browser',minify:true,target:'es2022'});
 await writeFile('../docs/.nojekyll','');
 await copyFile('src/pages-sw.js','../docs/sw.js');
-console.log('GitHub Pages PWA built in docs/ using official schedule-only data.');
+console.log('GitHub Pages PWA built in docs/ with the GitHub-hosted live feed.');

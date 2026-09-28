@@ -1,0 +1,32 @@
+name: Cairns live data
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 */4 * * *'
+  push:
+    branches: [main]
+    paths: ['.github/workflows/live-data.yml', 'app/scripts/publish-live.mjs']
+concurrency:
+  group: cairns-live-publisher
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 315
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci --omit=dev
+        working-directory: app
+      - name: Publish real Translink updates every 20 seconds
+        working-directory: app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/publish-live.mjs
