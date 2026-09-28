@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>BUS WATCH diagnostics</title><style>body{font:16px system-ui;background:#0b1110;color:#f2f5ed;max-width:800px;margin:40px auto;padding:20px}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}a{color:#d0f780}</style></head><body><h1>Browser feed diagnostics</h1><p>This page tests direct browser access to the two official feeds and checks PWA support. A failed direct request with a working same-origin API confirms why the Worker is needed.</p><pre id="result">Testing…</pre><a href="/">Back to BUS WATCH</a><script type="module">
+const lines=[];const log=text=>{lines.push(text);document.getElementById('result').textContent=lines.join('\n\n');};
+log('Secure context: '+window.isSecureContext);
+log('Service Worker support: '+('serviceWorker' in navigator));
+for(const url of ['https://gtfsrt.api.translink.com.au/GTFS/CNS_GTFS.zip','https://gtfsrt.api.translink.com.au/api/realtime/CNS/TripUpdates','/api/departures?stops=750042,750045']) {
+  try{const response=await fetch(url,{signal:AbortSignal.timeout(15000)});log(url+' → HTTP '+response.status+'; bytes '+(await response.arrayBuffer()).byteLength);}catch(error){log(url+' → '+error.name+': '+error.message);}
+}
+if('serviceWorker' in navigator){const registration=await navigator.serviceWorker.getRegistration('/');log('Service Worker active: '+!!registration?.active);}
+</script></body></html>

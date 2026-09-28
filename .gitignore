@@ -1,0 +1,7 @@
+# Local credentials and developer state
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.openai/

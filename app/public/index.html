@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1110"><meta name="description" content="Your Cairns bus stops, together. Live Translink departures and saved stops.">
+  <title>BUS WATCH — CAIRNS</title>
+  <link rel="manifest" href="/manifest.json"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="stylesheet" href="/styles.css"><script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header><div class="brand"><span class="brand-mark" aria-hidden="true">BW</span><span>BUS WATCH</span></div><label class="region"><span class="sr-only">Region</span><select aria-label="Region"><option>CAIRNS</option></select></label></header>
+    <nav aria-label="Main navigation"><button id="live-tab" aria-current="page">LIVE <span id="bookmark-count">2</span></button><button id="finder-tab">ROUTE FINDER</button></nav>
+    <main>
+      <section id="live-panel" aria-labelledby="live-heading">
+        <div class="page-heading"><div><p class="eyebrow">YOUR DEPARTURE BOARD</p><h1 id="live-heading">Saved stops<span class="accent">.</span></h1></div><button class="add-button" id="add-stop"><span aria-hidden="true">＋</span> Add stop</button></div>
+        <div class="update-bar"><div><p id="connection" role="status">Connecting to Translink…</p><p id="updated" class="muted">Refreshes every 20 seconds</p></div><button id="refresh" class="icon-button" aria-label="Refresh departures">↻</button></div>
+        <div id="warning" class="warning" role="status" hidden></div>
+        <div id="stops" class="stop-grid"><p class="loading">Loading your stops…</p></div>
+      </section>
+      <section id="finder-panel" aria-labelledby="finder-heading" hidden>
+        <div class="page-heading"><div><p class="eyebrow">CAIRNS NETWORK</p><h1 id="finder-heading">Find a stop<span class="accent">.</span></h1></div></div>
+        <p class="intro">Search a stop ID or stop name, then save it to your live board.</p>
+        <form id="search-form" class="search-form"><label for="search">Stop ID or name</label><div class="input-row"><input id="search" type="search" placeholder="e.g. 750042 or Smithfield" required minlength="2" maxlength="100"><button class="primary" type="submit">Search</button></div></form>
+        <p id="search-status" role="status" class="muted">Cairns stops only. Journey planning is coming later.</p><div id="results" class="results"></div>
+      </section>
+    </main>
+    <footer><span>CAIRNS, QUEENSLAND · AEST</span><p>Data: <a href="https://translink.com.au/about-translink/open-data" target="_blank" rel="noreferrer">Translink</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a><br>Independent app. Times may change.</p><button id="install" hidden>Install BUS WATCH</button></footer>
+  </div>
+  <dialog id="add-dialog"><form id="add-form"><div class="dialog-heading"><h2>Add a stop</h2><button type="button" id="close-dialog" class="icon-button" aria-label="Close">×</button></div><p>Enter a Translink stop ID. We’ll check it against the Cairns network.</p><label for="stop-id">Translink stop ID</label><input id="stop-id" inputmode="numeric" pattern="[0-9]{1,12}" maxlength="12" placeholder="750042" required><p id="add-status" role="status"></p><button class="primary full" id="save-stop" type="submit">Add stop</button></form></dialog>
+  <div id="toast" role="status" hidden></div>
+</body>
+</html>
