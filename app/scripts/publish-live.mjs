@@ -34,7 +34,9 @@ if (previous) {
 await mkdir(join(directory,'live'));
 await writeFile(join(directory,'.buswatch-live-feed'),marker);
 const once=process.argv.includes('--once');
-const until=Date.now()+(once?1:5*60*60*1000);
+// Leave a margin before the next four-hour schedule. GitHub Actions
+// coalesces overlapping runs, which otherwise produces multi-hour outages.
+const until=Date.now()+(once?1:(3*60+45)*60*1000);
 do {
   const started=Date.now();
   try {

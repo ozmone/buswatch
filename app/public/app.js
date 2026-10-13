@@ -84,11 +84,17 @@ $('stops').onclick=e=>{const remove=e.target.closest('[data-remove]');if(remove)
 $('add-form').onsubmit=async e=>{e.preventDefault();$('save-stop').disabled=true;$('add-status').textContent='Checking Cairns schedule…';try{await addBookmark($('stop-id').value.trim());$('add-dialog').close();showTab('live');}catch(error){$('add-status').textContent=error.message;}finally{$('save-stop').disabled=false;}};
 $('search-form').onsubmit=async e=>{e.preventDefault();const serial=++searchSerial;$('search-status').textContent='Searching Cairns stops…';$('results').innerHTML='';try{const data=await api('/api/stops?q='+encodeURIComponent($('search').value.trim()));if(serial!==searchSerial)return;$('search-status').textContent=data.stops.length?`${data.stops.length} matching stop${data.stops.length===1?'':'s'}${data.stops.length===30?' · showing first 30':''}`:'No Cairns stops found. Check the stop ID or try another name.';$('results').innerHTML=data.stops.map(s=>`<article class="search-result"><div><span class="stop-id">STOP ${escape(s.code)}</span><h2>${escape(s.name)}</h2><p>Routes ${s.routes.map(escape).join(' · ') || 'unavailable'}</p></div><button data-save="${escape(s.id)}" ${bookmarks.includes(s.id)?'disabled':''}>${bookmarks.includes(s.id)?'Saved':'＋ Save'}</button></article>`).join('');}catch(error){if(serial===searchSerial)$('search-status').textContent='Search failed. Check your connection and try again.';}};
 $('results').onclick=async e=>{const button=e.target.closest('[data-save]');if(!button)return;button.disabled=true;try{await addBookmark(button.dataset.save);button.textContent='Saved';}catch(error){button.disabled=false;toast(error.message);}};
-document.addEventListener('visibilitychange',()=>{if(!document.hidden) render();});
-window.addEventListener('online',render);window.addEventListener('offline',render);
+// A returning app must fetch again; redrawing a countdown cannot freshen data.
+document.addEventListener('visibilitychange',()=>{if(!document.hidden) {render();refresh();}});
+window.addEventListener('online',()=>{render();refresh();});window.addEventListener('offline',render);
 window.addEventListener('storage',e=>{if(e.key===BOOKMARK_KEY){try{const value=JSON.parse(e.newValue);if(Array.isArray(value)){bookmarks=value.filter(id=>typeof id==='string'&&/^\d{1,12}$/.test(id)).slice(0,30);render();refresh();}}catch{}}});
-// Keep countdowns moving; fetch only on initial load, saved-stop changes or ↻.
-setInterval(()=>{if(!document.hidden && !$('stops').contains(document.activeElement)) render();},10000);
+// Keep countdowns moving and update the visible board every 20 seconds.
+setInterval(()=>{
+  if(document.hidden) return;
+  if(!$('stops').contains(document.activeElement)) render();
+  // refresh() coalesces an in-flight request, avoiding overlapping fetches.
+  refresh();
+},20000);
 let installPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('install').hidden=false;});$('install').onclick=async()=>{await installPrompt?.prompt();$('install').hidden=true;installPrompt=null;};
 if('serviceWorker' in navigator) navigator.serviceWorker.register(new URL('./sw.js',import.meta.url)).catch(console.error);
 showTab(currentTab);render();refresh();

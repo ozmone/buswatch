@@ -14,7 +14,9 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 315
+    # Finish before the next four-hour scheduled slot. Overlapping runs are
+    # coalesced by GitHub Actions and were causing multi-hour publishing gaps.
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

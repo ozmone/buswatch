@@ -50,7 +50,7 @@ The current snapshot was fetched on 28 September 2026, and its latest service ca
 - The × on a stop removes that bookmark. Re-add its ID to restore it.
 - With bookmarks, a new launch opens LIVE. With none, it opens Route Finder.
 - LIVE means a fresh GTFS-RT prediction. SCHEDULED means the timetable only. Old predictions are marked STALE and lose their countdown. Failures keep the last good board when available, with a visible warning.
-- The board refreshes every 20 seconds while visible, on return to the app, and on manual refresh. The Worker coalesces requests for 20 seconds per isolate. Feed and individual prediction timestamps must be no more than two minutes old.
+- The board refreshes every 20 seconds while visible, immediately on return to the app, and on manual refresh. The Worker coalesces requests for 20 seconds per isolate. Feed and individual prediction timestamps must be no more than two minutes old.
 - Offline, the app shell and last successful snapshot remain available after a successful online visit. Offline data is explicitly stale. Search and adding stops require connectivity for validation.
 
 ## Official sources and matching
